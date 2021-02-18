@@ -89,6 +89,7 @@
         android:scaleX="0.60"
         android:scaleY="0.60"
         app:tint="#4B4B4B"
+        android:src="@drawable/ic_vector_retweet"
         tools:srcCompat="@drawable/ic_vector_retweet" />
 
 </RelativeLayout>

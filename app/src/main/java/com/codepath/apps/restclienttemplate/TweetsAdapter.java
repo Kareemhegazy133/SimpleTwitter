@@ -121,13 +121,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         public void bindRetweet(Tweet tweet) {
 
             tvBody.setText(tweet.body);
-
-
-            tvName.setText(tweet.user.name);
-            tvScreenName.setText(tweet.user.screenName);
-            tvTimestamp.setText(tweet.getFormattedTimestamp());
-            Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
-            Glide.with(context).load(R.drawable.ic_vector_retweet).into(ivRetweet);
+            if(tweet.retweeter != null) {
+                tvName.setText(tweet.retweeter.name);
+                tvScreenName.setText(tweet.retweeter.screenName);
+                tvTimestamp.setText(tweet.getFormattedTimestamp());
+                Glide.with(context).load(tweet.retweeter.profileImageUrl).into(ivProfileImage);
+                Glide.with(context).load(R.drawable.ic_vector_retweet).into(ivRetweet);
+            }
         }
     }
 }

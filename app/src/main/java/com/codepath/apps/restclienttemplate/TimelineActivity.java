@@ -7,6 +7,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -119,39 +120,53 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-
+                Log.e(Tag, response , throwable);
             }
         });
 
     }
-    public void getUserInfo(){
-        Log.i("timelineactivity","called");
-        //Getting the tweet's original user info
-        for(Tweet tweet: tweets){
-            Log.i("timelineactivity","forcalled");
-            if(tweet.isRetweet){
-                Log.i("timelineactivity","ifcalled");
-            client.getUser(new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Headers headers, JsonHttpResponseHandler.JSON
-                        json) {
-                    JSONArray jsonArray = json.jsonArray;
-                    try {
-                        ArrayList<User> users = (ArrayList<User>) User.fromJsonArray(jsonArray);
-                        Log.i("timelineactivity", users.get(0).screenName);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    // Now we call setRefreshing(false) to signal refresh has finished
-                    swipeContainer.setRefreshing(false);
-                }
+    public String getRetweeter(String body){
+        String header = body.split(":")[0];
+        return header.split(" ")[1].substring(1);
+    }
 
-                @Override
-                public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                    Log.e("timelineactivity", "failed", throwable);
+    public void getUserInfo() {
+        //Getting the tweet's original user info
+        final ArrayList<Integer> indexes = new ArrayList<>();
+        ArrayList<String> screenNames = new ArrayList<>();
+
+        for (int j = 0; j < tweets.size(); j++) {
+            if (tweets.get(j).isRetweet) {
+                indexes.add(j);
+                screenNames.add(getRetweeter(tweets.get(j).body));
+            }
+        }
+
+        String listString = TextUtils.join(", ", screenNames);
+
+        client.getUser(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JsonHttpResponseHandler.JSON
+                    json) {
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    ArrayList<User> users = (ArrayList<User>) User.fromJsonArray(jsonArray);
+                    for(int i = 0; i < users.size(); i++){
+                        tweets.get(indexes.get(i)).setRetweeter(users.get(i));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            }, tweet.user.screenName);
-        }
-        }
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeContainer.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e("timelineactivity", response, throwable);
+            }
+        }, listString);
+
+
     }
 }

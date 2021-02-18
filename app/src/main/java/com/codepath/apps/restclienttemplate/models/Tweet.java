@@ -25,10 +25,13 @@ public class Tweet {
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.id = jsonObject.getLong("id");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
-        tweet.isRetweet = jsonObject.getBoolean("retweeted");
+        tweet.isRetweet = tweet.body.startsWith("RT");
         return tweet;
     }
 
+    public void setRetweeter(User retweeter){
+        this.retweeter = retweeter;
+    }
     public String getFormattedTimestamp(){
         return TimeFormatter.getTimeDifference(createdAt);
     }
