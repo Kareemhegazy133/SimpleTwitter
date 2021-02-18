@@ -1,7 +1,11 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
 
@@ -16,4 +20,13 @@ public class User {
         user.profileImageUrl = jsonObject.getString("profile_image_url_https");
         return user;
     }
+
+    public static List<User> fromJsonArray(JSONArray jsonArray) throws JSONException {
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++){
+            users.add(fromJson(jsonArray.getJSONObject(i)));
+        }
+        return users;
+    }
+
 }

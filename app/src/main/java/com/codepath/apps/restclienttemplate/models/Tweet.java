@@ -15,6 +15,8 @@ public class Tweet {
     public String createdAt;
     public long id;
     public User user;
+    public boolean isRetweet;
+    public User retweeter;
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
 
@@ -23,6 +25,7 @@ public class Tweet {
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.id = jsonObject.getLong("id");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+        tweet.isRetweet = jsonObject.getBoolean("retweeted");
         return tweet;
     }
 
@@ -37,4 +40,5 @@ public class Tweet {
         }
         return tweets;
     }
+
 }

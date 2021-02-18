@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -108,6 +109,7 @@ public class TimelineActivity extends AppCompatActivity {
                 try {
                     adapter.clear();
                     adapter.addAll(Tweet.fromJsonArray(jsonArray));
+                    getUserInfo();
                     // Now we call setRefreshing(false) to signal refresh has finished
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
@@ -121,5 +123,35 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+    }
+    public void getUserInfo(){
+        Log.i("timelineactivity","called");
+        //Getting the tweet's original user info
+        for(Tweet tweet: tweets){
+            Log.i("timelineactivity","forcalled");
+            if(tweet.isRetweet){
+                Log.i("timelineactivity","ifcalled");
+            client.getUser(new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Headers headers, JsonHttpResponseHandler.JSON
+                        json) {
+                    JSONArray jsonArray = json.jsonArray;
+                    try {
+                        ArrayList<User> users = (ArrayList<User>) User.fromJsonArray(jsonArray);
+                        Log.i("timelineactivity", users.get(0).screenName);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    // Now we call setRefreshing(false) to signal refresh has finished
+                    swipeContainer.setRefreshing(false);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                    Log.e("timelineactivity", "failed", throwable);
+                }
+            }, tweet.user.screenName);
+        }
+        }
     }
 }
