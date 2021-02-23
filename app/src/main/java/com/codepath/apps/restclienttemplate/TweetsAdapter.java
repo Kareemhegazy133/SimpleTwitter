@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +14,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
-import com.codepath.apps.restclienttemplate.models.User;
-import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.List;
-
-import okhttp3.Headers;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
 
@@ -86,9 +80,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     // Define a ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        TwitterClient client;
-        TweetsAdapter adapter;
-        SwipeRefreshLayout swipeContainer;
         TextView tvName;
         TextView tvScreenName;
         TextView tvBody;
@@ -107,7 +98,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvName = itemView.findViewById(R.id.tvName);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
-            tvRetweet = itemView.findViewById(R.id.tvRetweet);
+            tvRetweet = (TextView) itemView.findViewById(R.id.tvRetweet);
+
         }
 
         public void bind(Tweet tweet) {
@@ -115,19 +107,27 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvName.setText(tweet.user.name);
             tvScreenName.setText(tweet.user.screenName);
             tvTimestamp.setText(tweet.getFormattedTimestamp());
+
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
         }
 
         public void bindRetweet(Tweet tweet) {
 
-            tvBody.setText(tweet.body);
+            tvBody.setText(fixBodyText(tweet.body));
             if(tweet.retweeter != null) {
                 tvName.setText(tweet.retweeter.name);
                 tvScreenName.setText(tweet.retweeter.screenName);
                 tvTimestamp.setText(tweet.getFormattedTimestamp());
+
                 Glide.with(context).load(tweet.retweeter.profileImageUrl).into(ivProfileImage);
-                Glide.with(context).load(R.drawable.ic_vector_retweet).into(ivRetweet);
             }
+        }
+
+        public String fixBodyText(String body){
+            String fixedBody;
+            int colonIndex = body.indexOf(":");
+            fixedBody = body.substring(colonIndex + 2);
+            return fixedBody;
         }
     }
 }

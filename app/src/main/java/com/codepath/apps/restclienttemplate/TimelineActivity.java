@@ -151,6 +151,7 @@ public class TimelineActivity extends AppCompatActivity {
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     ArrayList<User> users = (ArrayList<User>) User.fromJsonArray(jsonArray);
+                    Log.v(Tag, users.get(1).name);
                     for(int i = 0; i < users.size(); i++){
                         tweets.get(indexes.get(i)).setRetweeter(users.get(i));
                     }
@@ -159,6 +160,7 @@ public class TimelineActivity extends AppCompatActivity {
                 }
                 // Now we call setRefreshing(false) to signal refresh has finished
                 swipeContainer.setRefreshing(false);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -166,7 +168,5 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.e("timelineactivity", response, throwable);
             }
         }, listString);
-
-
     }
 }
