@@ -6,6 +6,6 @@
         android:id="@+id/compose"
         android:icon="@drawable/ic_vector_compose"
         android:title="Compose"
-        android:iconTint="@android:color/holo_blue_bright"
+        android:iconTint="@android:color/white"
         app:showAsAction="always" />
 </menu>

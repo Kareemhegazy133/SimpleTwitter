@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -98,7 +97,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvName = itemView.findViewById(R.id.tvName);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
-            tvRetweet = (TextView) itemView.findViewById(R.id.tvRetweet);
+            tvRetweet = itemView.findViewById(R.id.tvRetweet);
 
         }
 
